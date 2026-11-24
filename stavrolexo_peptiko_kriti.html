@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Φύλλο Εργασίας - Σταυρόλεξο: Πεπτικό Σύστημα & Κρητική Διατροφή (Ε' Δημοτικού)</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm 12mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "DejaVu Sans", "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      color: #111;
+    }
+
+    .print-bar {
+      max-width: 800px;
+      margin: 0 auto 15px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1b5e20;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .print-bar button {
+      background: #ff9800;
+      color: #000;
+      border: none;
+      padding: 10px 22px;
+      font-size: 15px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background 0.2s;
+    }
+
+    .print-bar button:hover {
+      background: #f57c00;
+      color: #fff;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 20px auto;
+      background: #fff;
+      padding: 14mm 16mm;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    /* Κεφαλίδα */
+    .header-table {
+      width: 100%;
+      border-bottom: 2px solid #2e7d32;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .header-table td {
+      vertical-align: middle;
+    }
+
+    .school-title {
+      font-size: 13px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .subject-title {
+      text-align: right;
+      font-size: 13px;
+      font-weight: bold;
+      color: #2e7d32;
+    }
+
+    h1.doc-title {
+      text-align: center;
+      font-size: 18px;
+      margin: 10px 0 4px 0;
+      color: #1b5e20;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    /* Στοιχεία μαθητή */
+    .student-fields {
+      width: 100%;
+      border: 1px solid #a5d6a7;
+      background: #f1f8e9;
+      border-radius: 5px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+
+    .student-fields table {
+      width: 100%;
+    }
+
+    .student-fields td {
+      padding: 2px 5px;
+    }
+
+    /* Σταυρόλεξο */
+    .cw-section {
+      margin-bottom: 14px;
+    }
+
+    .cw-grid-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .cw-grid {
+      display: grid;
+      grid-template-columns: repeat(20, 24px);
+      grid-template-rows: repeat(11, 24px);
+      gap: 1px;
+    }
+
+    .cell {
+      width: 24px;
+      height: 24px;
+      position: relative;
+      background: transparent;
+    }
+
+    .cell.active {
+      background: #ffffff;
+      border: 1.5px solid #111;
+    }
+
+    .cell .num {
+      position: absolute;
+      top: 1px;
+      left: 1.5px;
+      font-size: 8px;
+      font-weight: bold;
+      color: #000;
+      line-height: 1;
+    }
+
+    .cell .letter {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      color: #1565c0;
+    }
+
+    /* Ορισμοί (Clues) */
+    .clues-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .clues-box {
+      border: 1px solid #c8e6c9;
+      background: #fafafa;
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+
+    .clues-box h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #1b5e20;
+      border-bottom: 1.5px solid #2e7d32;
+      padding-bottom: 3px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .clue-item {
+      font-size: 11.5px;
+      line-height: 1.4;
+      margin-bottom: 7px;
+      color: #222;
+    }
+
+    .clue-num {
+      font-weight: bold;
+      color: #d84315;
+    }
+
+    .clue-letters {
+      color: #666;
+      font-size: 10.5px;
+      font-style: italic;
+    }
+
+    /* Bonus Card */
+    .bonus-card {
+      margin-top: 12px;
+      background: #fffde7;
+      border-left: 4px solid #fbc02d;
+      padding: 8px 12px;
+      border-radius: 0 5px 5px 0;
+      font-size: 11.5px;
+      line-height: 1.4;
+    }
+
+    .bonus-card strong {
+      color: #f57f17;
+    }
+
+    /* Σελίδα Λύσεων (Page 2) */
+    .page-break {
+      page-break-before: always;
+    }
+
+    .solutions-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 11.5px;
+    }
+
+    .solutions-table th, .solutions-table td {
+      border: 1px solid #bbb;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .solutions-table th {
+      background: #e8f5e9;
+      color: #1b5e20;
+      font-weight: bold;
+    }
+
+    .sol-tag {
+      font-weight: bold;
+      color: #d84315;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .print-bar {
+        display: none !important;
+      }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
+        min-height: auto;
+        padding: 0;
+      }
+      .cell.active {
+        border-color: #000;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Μπάρα Εκτύπωσης για τον Περιηγητή -->
+  <div class="print-bar">
+    <div>
+      <strong>📄 Έτοιμο για Εκτύπωση / Αποθήκευση σε PDF</strong>
+      <div style="font-size: 12px; opacity: 0.9;">Πατήστε το κουμπί και επιλέξτε «Αποθήκευση ως PDF» (Save as PDF)</div>
+    </div>
+    <button onclick="window.print()">📥 Αποθήκευση σε PDF / Εκτύπωση</button>
+  </div>
+
+  <!-- ==================== ΣΕΛΙΔΑ 1: ΦΥΛΛΟ ΕΡΓΑΣΙΑΣ ΜΑΘΗΤΗ ==================== -->
+  <div class="page">
+    <table class="header-table">
+      <tr>
+        <td class="school-title">ΔΗΜΟΤΙΚΟ ΣΧΟΛΕΙΟ: ................................................................</td>
+        <td class="subject-title">ΦΥΣΙΚΑ Ε' ΔΗΜΟΤΙΚΟΥ</td>
+      </tr>
+    </table>
+
+    <h1 class="doc-title">ΣΤΑΥΡΟΛΕΞΟ: ΤΟ ΤΑΞΙΔΙ ΤΗΣ ΤΡΟΦΗΣ & Η ΚΡΗΤΙΚΗ ΔΙΑΤΡΟΦΗ</h1>
+    <div class="doc-subtitle">Ενότητα: Το Πεπτικό Σύστημα και η Διατροφή του Ανθρώπου</div>
+
+    <div class="student-fields">
+      <table>
+        <tr>
+          <td style="width: 55%;"><strong>Ονοματεπώνυμο Μαθητή/τριας:</strong> ............................................................................</td>
+          <td style="width: 20%;"><strong>Τμήμα:</strong> Ε' .....</td>
+          <td style="width: 25%;"><strong>Ημερομηνία:</strong> ...../...../2026</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Πλέγμα Σταυρολέξου -->
+    <div class="cw-section">
+      <div class="cw-grid-wrap">
+        <div class="cw-grid" id="studentGrid"></div>
+      </div>
+    </div>
+
+    <!-- Ορισμοί -->
+    <div class="clues-grid">
+      <!-- ΟΡΙΖΟΝΤΙΑ -->
+      <div class="clues-box">
+        <h3>ΟΡΙΖΟΝΤΙΑ &rarr; <span>[5 λέξεις]</span></h3>
+        <div class="clue-item">
+          <span class="clue-num">1.</span> Το μεγάλο όργανο (ήπαρ) που παράγει τη χολή, η οποία βοηθά στη διάσπαση των λιπών. <span class="clue-letters">(6 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">5.</span> Το πολύτιμο «υγρό χρυσάφι» των ελαιώνων της Κρήτης μας! Ανήκει στα λίπη και χαρίζει ενέργεια και υγεία. <span class="clue-letters">(9 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">7.</span> Τα μπροστινά κοφτερά δόντια που χρησιμοποιούμε κυρίως για να κόβουμε την τροφή (όπως μια μπουκιά παξιμάδι!). <span class="clue-letters">(8 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">8.</span> Εκεί περνούν τα θρεπτικά συστατικά αφού απορροφηθούν στο λεπτό έντερο, για να ταξιδέψουν σε όλο το σώμα. <span class="clue-letters">(4 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">9.</span> Το υγρό στη στοματική κοιλότητα που υγραίνει την τροφή, τη μαλακώνει και ξεκινά τη διάσπαση του αμύλου. <span class="clue-letters">(5 γράμματα)</span>
+        </div>
+      </div>
+
+      <!-- ΚΑΘΕΤΑ -->
+      <div class="clues-box">
+        <h3>ΚΑΘΕΤΑ &darr; <span>[5 λέξεις]</span></h3>
+        <div class="clue-item">
+          <span class="clue-num">1.</span> Όργανο σε σχήμα «σάκου», όπου η τροφή ανακατεύεται με τα στομαχικά υγρά και γίνεται παχύρρευστος χυλός. <span class="clue-letters">(7 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">2.</span> Το ξακουστό, μυρωδάτο φρούτο του κάμπου των Χανίων! Είναι γεμάτο βιταμίνες που θωρακίζουν τον οργανισμό. <span class="clue-letters">(9 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">3.</span> Ο μυώδης σωλήνας που απλώς μεταφέρει την τροφή από το στόμα προς το στομάχι, χωρίς να γίνεται διάσπαση. <span class="clue-letters">(9 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">4.</span> Το υγρό που παράγεται στο συκώτι και διασπά τα λίπη σε μικρότερα σταγονίδια. <span class="clue-letters">(4 γράμματα)</span>
+        </div>
+        <div class="clue-item">
+          <span class="clue-num">6.</span> Τα πρώτα 20 παιδικά μας δόντια, που σιγά σιγά πέφτουν για να αντικατασταθούν από τα μόνιμα. <span class="clue-letters">(7 γράμματα)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bonus Card -->
+    <div class="bonus-card">
+      <strong>🌿 Bonus Ερώτηση - Το Μυστικό της Κρητικής Παράδοσης:</strong><br>
+      <em>«Στα μέρη μας μαζεύουμε συχνά άγρια χόρτα (ραδίκια, τσιγαριαστά κ.ά.). Ποιο πολύτιμο συστατικό περιέχουν σε μεγάλες ποσότητες, το οποίο –αν και δεν απορροφάται από το αίμα– βοηθά το έντερό μας να κινείται σωστά και προλαμβάνει τη δυσκοιλιότητα;»</em><br>
+      <strong>Απάντηση:</strong> Οι Φ _ _ _ _ _ _ &nbsp; Ι _ _ _ (2 λέξεις)
+    </div>
+  </div>
+
+  <!-- ==================== ΣΕΛΙΔΑ 2: ΛΥΣΕΙΣ & ΟΔΗΓΟΣ ΕΚΠΑΙΔΕΥΤΙΚΟΥ ==================== -->
+  <div class="page page-break">
+    <table class="header-table">
+      <tr>
+        <td class="school-title">ΟΔΗΓΟΣ ΕΚΠΑΙΔΕΥΤΙΚΟΥ / ΑΠΑΝΤΗΣΕΙΣ</td>
+        <td class="subject-title">ΦΥΣΙΚΑ Ε' ΔΗΜΟΤΙΚΟΥ</td>
+      </tr>
+    </table>
+
+    <h1 class="doc-title" style="font-size: 16px;">ΛΥΣΕΙΣ ΣΤΑΥΡΟΛΕΞΟΥ & ΑΥΤΟΑΞΙΟΛΟΓΗΣΗ</h1>
+    <div class="doc-subtitle">Συμπληρωμένο πλέγμα & αντιστοίχιση με το επαναληπτικό φύλλο εργασίας</div>
+
+    <!-- Συμπληρωμένο Πλέγμα Λύσης -->
+    <div class="cw-section">
+      <div class="cw-grid-wrap">
+        <div class="cw-grid" id="solutionGrid"></div>
+      </div>
+    </div>
+
+    <table class="solutions-table">
+      <thead>
+        <tr>
+          <th style="width: 8%;">Α/Α</th>
+          <th style="width: 15%;">Κατεύθυνση</th>
+          <th style="width: 18%;">Απάντηση</th>
+          <th style="width: 59%;">Αντιστοίχιση με το Επαναληπτικό Φύλλο & Διδακτικά Σχόλια</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="sol-tag">1</span></td>
+          <td>Οριζόντια</td>
+          <td><strong>ΣΥΚΩΤΙ</strong></td>
+          <td>Μέρος Α1 (4), Β2 (5) & Γ2 (2): Παράγει τη χολή που διασπά τα λίπη.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">5</span></td>
+          <td>Οριζόντια</td>
+          <td><strong>ΕΛΑΙΟΛΑΔΟ</strong></td>
+          <td>Μέρος Β3: Κύρια πηγή καλών λιπαρών & βασικός πυλώνας της τοπικής κρητικής διατροφής.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">7</span></td>
+          <td>Οριζόντια</td>
+          <td><strong>ΚΟΠΤΗΡΕΣ</strong></td>
+          <td>Μέρος Α2 (2): Τα μπροστινά δόντια υπεύθυνα για το κόψιμο της τροφής.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">8</span></td>
+          <td>Οριζόντια</td>
+          <td><strong>ΑΙΜΑ</strong></td>
+          <td>Μέρος Α2 (4) & Β1 (στ): Στο λεπτό έντερο τα θρεπτικά συστατικά περνούν στην κυκλοφορία του αίματος.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">9</span></td>
+          <td>Οριζόντια</td>
+          <td><strong>ΣΑΛΙΟ</strong></td>
+          <td>Μέρος Β1 (β) & Γ2 (1): Υγραίνει την τροφή και ξεκινά τη διάσπαση του αμύλου.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">1</span></td>
+          <td>Κάθετα</td>
+          <td><strong>ΣΤΟΜΑΧΙ</strong></td>
+          <td>Μέρος Α2 (1) & Β1 (δ): Ανάμειξη με στομαχικά υγρά και μετατροπή σε παχύρρευστο χυλό.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">2</span></td>
+          <td>Κάθετα</td>
+          <td><strong>ΠΟΡΤΟΚΑΛΙ</strong></td>
+          <td>Μέρος Β3: Ομάδα φρούτων / πλούσιο σε βιταμίνη C (χαρακτηριστικό προϊόν κάμπου Χανίων).</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">3</span></td>
+          <td>Κάθετα</td>
+          <td><strong>ΟΙΣΟΦΑΓΟΣ</strong></td>
+          <td>Μέρος Α1 (6) & Β1 (γ): Μυώδης σωλήνας που απλώς μεταφέρει την τροφή χωρίς πέψη.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">4</span></td>
+          <td>Κάθετα</td>
+          <td><strong>ΧΟΛΗ</strong></td>
+          <td>Μέρος Α1 (4) & Γ2 (2): Υγρό που παράγεται στο συκώτι για τη διάσπαση των λιπών.</td>
+        </tr>
+        <tr>
+          <td><span class="sol-tag">6</span></td>
+          <td>Κάθετα</td>
+          <td><strong>ΝΕΟΓΙΛΑ</strong></td>
+          <td>Μέρος Α1 (2) & Γ1 (1): Τα πρώτα 20 παιδικά δόντια (αντικαθίστανται από 32 μόνιμα).</td>
+        </tr>
+        <tr>
+          <td colspan="2"><span class="sol-tag">Bonus</span></td>
+          <td><strong>ΦΥΤΙΚΕΣ ΙΝΕΣ</strong></td>
+          <td>Μέρος Α1 (5) & Γ3 (2): Δεν απορροφώνται, αλλά εξασφαλίζουν την καλή λειτουργία του εντέρου.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const activeCells = [
+      [0, 2, 'Σ', 1], [0, 3, 'Υ', null], [0, 4, 'Κ', null], [0, 5, 'Ω', null], [0, 6, 'Τ', null], [0, 7, 'Ι', null], [0, 11, 'Π', 2],
+      [1, 2, 'Τ', null], [1, 8, 'Ο', 3], [1, 11, 'Ο', null],
+      [2, 2, 'Ο', null], [2, 5, 'Χ', 4], [2, 8, 'Ι', null], [2, 11, 'Ρ', null],
+      [3, 2, 'Μ', null], [3, 5, 'Ο', null], [3, 8, 'Σ', null], [3, 11, 'Τ', null],
+      [4, 0, 'Ε', 5], [4, 1, 'Λ', null], [4, 2, 'Α', null], [4, 3, 'Ι', null], [4, 4, 'Ο', null],
+      [4, 5, 'Λ', null], [4, 6, 'Α', null], [4, 7, 'Δ', null], [4, 8, 'Ο', null], [4, 11, 'Ο', null], [4, 17, 'Ν', 6],
+      [5, 2, 'Χ', null], [5, 5, 'Η', null], [5, 8, 'Φ', null],
+      [5, 11, 'Κ', 7], [5, 12, 'Ο', null], [5, 13, 'Π', null], [5, 14, 'Τ', null], [5, 15, 'Η', null], [5, 16, 'Ρ', null], [5, 17, 'Ε', null], [5, 18, 'Σ', null],
+      [6, 2, 'Ι', null], [6, 8, 'Α', 8], [6, 9, 'Ι', null], [6, 10, 'Μ', null], [6, 11, 'Α', null], [6, 17, 'Ο', null],
+      [7, 8, 'Γ', null], [7, 11, 'Λ', null], [7, 17, 'Γ', null],
+      [8, 8, 'Ο', null], [8, 11, 'Ι', null], [8, 17, 'Ι', null],
+      [9, 8, 'Σ', null], [9, 15, 'Σ', 9], [9, 16, 'Α', null], [9, 17, 'Λ', null], [9, 18, 'Ι', null], [9, 19, 'Ο', null],
+      [10, 17, 'Α', null]
+    ];
+
+    function buildGrid(containerId, showLetters) {
+      const container = document.getElementById(containerId);
+      for (let r = 0; r < 11; r++) {
+        for (let c = 0; c < 20; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.id = `${containerId}-${r}-${c}`;
+          container.appendChild(cell);
+        }
+      }
+
+      activeCells.forEach(([r, c, letter, num]) => {
+        const cell = document.getElementById(`${containerId}-${r}-${c}`);
+        cell.classList.add('active');
+        if (num) {
+          const numSpan = document.createElement('span');
+          numSpan.className = 'num';
+          numSpan.textContent = num;
+          cell.appendChild(numSpan);
+        }
+        if (showLetters) {
+          const lSpan = document.createElement('span');
+          lSpan.className = 'letter';
+          lSpan.textContent = letter;
+          cell.appendChild(lSpan);
+        }
+      });
+    }
+
+    buildGrid('studentGrid', false);
+    buildGrid('solutionGrid', true);
+  </script>
+</body>
+</html>
